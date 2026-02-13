@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Valentine's Day 💘</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== Custom Cursor (Desktop Only) ===== -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- ===== Floating Hearts (background) ===== -->
+  <div id="heartsContainer" aria-hidden="true"></div>
+
+  <!-- ===== Page Content ===== -->
+  <div class="page" id="page">
+
+    <!-- ─── Hero Section ─── -->
+    <header class="hero reveal">
+      <p class="hero__date">February 14</p>
+      <h1 class="hero__title">Happy Valentine's Day <span class="heart-icon">💘</span></h1>
+      <div class="hero__divider" aria-hidden="true"></div>
+    </header>
+
+    <!-- ─── Love Letter ─── -->
+    <section class="letter reveal">
+      <p class="letter__line">From the moment you came into my life,</p>
+      <p class="letter__line">everything started feeling brighter.</p>
+      <br />
+      <p class="letter__line">You are my peace,</p>
+      <p class="letter__line">my happiness,</p>
+      <p class="letter__line">and my favorite person.</p>
+      <br />
+      <p class="letter__line">Thank you for every smile,</p>
+      <p class="letter__line">every memory,</p>
+      <p class="letter__line">and every moment.</p>
+      <br />
+      <p class="letter__line letter__line--closing">Today is about celebrating you.</p>
+      <p class="letter__line letter__line--heart">Happy Valentine's Day ❤️</p>
+    </section>
+
+    <!-- ─── Video Section ─── -->
+    <section class="section videos reveal">
+      <h2 class="section__heading">Our Moments 🎥</h2>
+      <div class="video-grid">
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <video
+              src="videos/video1.mp4"
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              class="video-player"
+              data-autoplay
+            ></video>
+            <button class="video-play-btn" aria-label="Play video" type="button">▶</button>
+            <div class="video-spinner" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <div class="video-card">
+          <div class="video-wrapper">
+            <video
+              src="videos/video2.mp4"
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              class="video-player"
+              data-autoplay
+            ></video>
+            <button class="video-play-btn" aria-label="Play video" type="button">▶</button>
+            <div class="video-spinner" aria-hidden="true"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Photo Gallery ─── -->
+    <section class="section gallery reveal">
+      <h2 class="section__heading">Our Gallery 📸</h2>
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="gallery-item reveal"><img src="images/photo1.jpeg"  alt="Memory 1"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo2.jpeg"  alt="Memory 2"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo3.jpeg"  alt="Memory 3"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo4.jpeg"  alt="Memory 4"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo5.jpeg"  alt="Memory 5"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo6.jpeg"  alt="Memory 6"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo7.jpeg"  alt="Memory 7"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo8.jpeg"  alt="Memory 8"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo9.jpeg"  alt="Memory 9"  loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo10.jpeg" alt="Memory 10" loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo11.jpeg" alt="Memory 11" loading="lazy" /></div>
+        <div class="gallery-item reveal"><img src="images/photo12.jpeg" alt="Memory 11" loading="lazy" /></div>
+      </div>
+    </section>
+
+    <!-- ─── Footer ─── -->
+    <footer class="footer reveal">
+      <p>Made with ❤️ just for you</p>
+    </footer>
+
+  </div>
+
+  <!-- ===== Lightbox Modal ===== -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
+    <button class="lightbox__close" id="lightboxClose" type="button" aria-label="Close">&times;</button>
+    <img class="lightbox__img" id="lightboxImg" src="" alt="" />
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
