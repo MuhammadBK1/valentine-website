@@ -1,6 +1,6 @@
 /* =============================================================
    Happy Valentine's Day – script.js
-   Lightweight · Smooth · Mobile-optimised · No libraries
+   Cinematic · Smooth · Premium · Mobile-optimised · No libraries
    ============================================================= */
 
 (function () {
@@ -9,6 +9,29 @@
   /* ─────────── Device Detection ─────────── */
   var isDesktop    = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  var isMobile     = window.innerWidth <= 480;
+
+  /* ============================================================
+     0.  CINEMATIC INTRO SCREEN
+     ============================================================ */
+  function initIntro() {
+    var intro  = document.getElementById('introScreen');
+    var toggle = document.getElementById('themeToggle');
+    if (!intro) return;
+
+    /* Intro overlay naturally prevents scrolling (z-index 50000) */
+
+    setTimeout(function () {
+      intro.classList.add('fade-out');
+
+      setTimeout(function () {
+        intro.classList.add('hidden');
+        if (toggle) toggle.classList.add('show');
+      }, 1000); /* match CSS transition duration */
+    }, 3000); /* intro display time */
+  }
+
+  initIntro();
 
   /* ============================================================
      1.  SCROLL-REVEAL  (Intersection Observer)
@@ -42,6 +65,17 @@
   }
 
   initReveal();
+
+  /* Safety fallback: ensure above-fold reveals become visible after intro */
+  setTimeout(function () {
+    var unrevealed = document.querySelectorAll('.reveal:not(.visible)');
+    for (var i = 0; i < unrevealed.length; i++) {
+      var rect = unrevealed[i].getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        unrevealed[i].classList.add('visible');
+      }
+    }
+  }, 4500); /* runs after intro fully hides */
 
   /* ============================================================
      2.  CUSTOM CURSOR  (desktop & screen > 768px only)
@@ -78,7 +112,7 @@
 
     /* Hover growth on interactive items */
     var hoverTargets = document.querySelectorAll(
-      '.gallery-item, .lightbox__close, .video-play-btn, a, button, [role="button"]'
+      '.gallery-item, .lightbox__close, .video-play-btn, .theme-toggle, .surprise__btn, .surprise-popup__close, a, button, [role="button"]'
     );
     for (var i = 0; i < hoverTargets.length; i++) {
       hoverTargets[i].addEventListener('mouseenter', function () {
@@ -105,9 +139,9 @@
   initCursor();
 
   /* ============================================================
-     3.  FLOATING HEARTS  (lightweight background, max 20)
+     3.  FLOATING HEARTS  (subtle, max 15, requestAnimationFrame)
      ============================================================ */
-  var MAX_HEARTS = 20;
+  var MAX_HEARTS = isMobile ? 8 : 15;
   var heartPool  = 0;
   var EMOJIS     = ['💕', '💗', '🩷', '❤️', '💖'];
 
@@ -122,16 +156,16 @@
     el.className = 'floating-heart';
     el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
     el.style.left     = (Math.random() * 100) + 'vw';
-    el.style.fontSize = (Math.random() * 12 + 14) + 'px';
+    el.style.fontSize = (Math.random() * 10 + 12) + 'px';
 
-    var dur   = (Math.random() * 4 + 5).toFixed(1);
+    var dur   = (Math.random() * 4 + 6).toFixed(1);
     var delay = (Math.random() * 1).toFixed(2);
-    var drift = ((Math.random() - 0.5) * 50).toFixed(0);
+    var drift = ((Math.random() - 0.5) * 40).toFixed(0);
 
     el.style.setProperty('--dur',   dur + 's');
     el.style.setProperty('--delay', delay + 's');
     el.style.setProperty('--drift', drift + 'px');
-    el.style.setProperty('--peak',  (Math.random() * 0.08 + 0.1).toFixed(2));
+    el.style.setProperty('--peak',  (Math.random() * 0.06 + 0.08).toFixed(2));
 
     container.appendChild(el);
 
@@ -144,11 +178,11 @@
   /* Spawn hearts gently at intervals */
   function initHearts() {
     /* Initial batch */
-    for (var i = 0; i < 6; i++) {
-      setTimeout(spawnHeart, i * 300);
+    for (var i = 0; i < (isMobile ? 3 : 5); i++) {
+      setTimeout(spawnHeart, i * 400);
     }
     /* Continuous gentle spawn */
-    setInterval(spawnHeart, 2800);
+    setInterval(spawnHeart, isMobile ? 4000 : 3200);
   }
 
   initHearts();
@@ -249,5 +283,175 @@
 
   /* Run video init after a small delay to let DOM settle */
   setTimeout(initVideos, 400);
+
+  /* ============================================================
+     6.  DARK ROMANTIC MODE TOGGLE
+     ============================================================ */
+  function initThemeToggle() {
+    var toggle = document.getElementById('themeToggle');
+    var icon   = document.getElementById('themeIcon');
+    if (!toggle || !icon) return;
+
+    /* Restore saved preference */
+    var saved = localStorage.getItem('valentine-theme');
+    if (saved === 'dark') {
+      document.body.classList.add('dark-mode');
+      icon.textContent = '☀️';
+    }
+
+    toggle.addEventListener('click', function () {
+      var isDark = document.body.classList.toggle('dark-mode');
+      icon.textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('valentine-theme', isDark ? 'dark' : 'light');
+    });
+  }
+
+  initThemeToggle();
+
+  /* ============================================================
+     7.  SURPRISE BUTTON — CONFETTI + HEART EXPLOSION + POPUP
+     ============================================================ */
+  function initSurprise() {
+    var btn      = document.getElementById('surpriseBtn');
+    var popup    = document.getElementById('surprisePopup');
+    var closeBtn = document.getElementById('surpriseClose');
+    var canvas   = document.getElementById('confettiCanvas');
+    if (!btn || !popup || !closeBtn || !canvas) return;
+
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var animId = null;
+
+    function resizeCanvas() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    var PARTICLE_COUNT = isMobile ? 60 : 120;
+    var COLORS = [
+      '#ff6b81', '#ff4757', '#ff6348', '#ffa502',
+      '#ff7f50', '#e84393', '#fd79a8', '#fab1a0',
+      '#f5d5c8', '#ffffff', '#ffcccc', '#ff9ff3'
+    ];
+    var HEARTS = ['❤️', '💖', '💕', '💗', '🩷'];
+
+    function createParticle(cx, cy, type) {
+      var angle = Math.random() * Math.PI * 2;
+      var speed = Math.random() * 6 + 2;
+      return {
+        x: cx,
+        y: cy,
+        vx: Math.cos(angle) * speed * (0.5 + Math.random()),
+        vy: Math.sin(angle) * speed * (0.5 + Math.random()) - 3,
+        gravity: 0.08 + Math.random() * 0.04,
+        size: Math.random() * 6 + 3,
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 8,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        alpha: 1,
+        decay: 0.008 + Math.random() * 0.006,
+        type: type, /* 'confetti' or 'heart' */
+        heart: HEARTS[Math.floor(Math.random() * HEARTS.length)]
+      };
+    }
+
+    function drawParticle(p) {
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
+
+      if (p.type === 'heart') {
+        ctx.font = p.size * 2 + 'px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.heart, 0, 0);
+      } else {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      }
+
+      ctx.restore();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.rotation += p.rotSpeed;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        drawParticle(p);
+      }
+
+      if (particles.length > 0) {
+        animId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        animId = null;
+      }
+    }
+
+    function triggerConfetti() {
+      var cx = canvas.width / 2;
+      var cy = canvas.height / 2;
+
+      /* Confetti particles */
+      var confettiCount = Math.floor(PARTICLE_COUNT * 0.75);
+      for (var i = 0; i < confettiCount; i++) {
+        particles.push(createParticle(cx, cy, 'confetti'));
+      }
+
+      /* Heart particles from center */
+      var heartCount = PARTICLE_COUNT - confettiCount;
+      for (var j = 0; j < heartCount; j++) {
+        particles.push(createParticle(cx, cy, 'heart'));
+      }
+
+      if (!animId) {
+        animId = requestAnimationFrame(animateConfetti);
+      }
+    }
+
+    /* Open popup + confetti */
+    btn.addEventListener('click', function () {
+      triggerConfetti();
+      setTimeout(function () {
+        popup.classList.add('open');
+        popup.setAttribute('aria-hidden', 'false');
+      }, 300);
+    });
+
+    /* Close popup */
+    function closePopup() {
+      popup.classList.remove('open');
+      popup.setAttribute('aria-hidden', 'true');
+    }
+
+    closeBtn.addEventListener('click', closePopup);
+
+    popup.addEventListener('click', function (e) {
+      if (e.target === popup) closePopup();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && popup.classList.contains('open')) {
+        closePopup();
+      }
+    });
+  }
+
+  initSurprise();
 
 })();
