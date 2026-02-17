@@ -508,6 +508,13 @@ body.dark-mode::before {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: var(--transition-theme);
+  opacity: 0;
+  animation: galleryItemIn 0.6s ease forwards;
+}
+
+@keyframes galleryItemIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 .gallery-item img {
