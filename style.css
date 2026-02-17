@@ -986,6 +986,264 @@ body.cursor-active .surprise-popup__close {
   .intro__text {
     padding: 0 1rem;
   }
+
+  .secret-surprise { padding: 2rem 1rem 1.5rem; }
+
+  .secret-surprise__btn {
+    font-size: 1rem;
+    padding: 0.9rem 2.2rem;
+  }
+
+  .secret-surprise__glow {
+    width: 200px;
+    height: 200px;
+  }
+
+  .secret-popup__card {
+    padding: 2.5rem 1.5rem 2rem;
+  }
+}
+
+/* ═══════════════════════════════════════
+   SECRET SURPRISE BUTTON
+   ═══════════════════════════════════════ */
+.secret-surprise {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  position: relative;
+}
+
+.secret-surprise__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,100,130,0.18) 0%, transparent 70%);
+  animation: secretGlowPulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes secretGlowPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  50%      { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+}
+
+.secret-surprise__label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  font-style: italic;
+  color: var(--text-muted);
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
+  transition: var(--transition-theme);
+}
+
+.secret-surprise__btn {
+  position: relative;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 1rem 2.8rem;
+  border: 2px solid rgba(255, 100, 130, 0.5);
+  border-radius: 50px;
+  background: linear-gradient(135deg, rgba(255,100,130,0.2) 0%, rgba(255,60,100,0.15) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  -webkit-tap-highlight-color: transparent;
+  animation: secretBtnFloat 4s ease-in-out infinite;
+}
+
+@keyframes secretBtnFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+.secret-surprise__btn:hover {
+  background: linear-gradient(135deg, rgba(255,100,130,0.35) 0%, rgba(255,60,100,0.3) 100%);
+  border-color: rgba(255, 100, 130, 0.7);
+  box-shadow: 0 8px 40px rgba(255, 80, 120, 0.25), 0 0 60px rgba(255, 80, 120, 0.1);
+  transform: translateY(-3px) scale(1.04);
+}
+
+.secret-surprise__btn:active {
+  transform: scale(0.96);
+  animation: none;
+}
+
+.secret-surprise__btn-text {
+  position: relative;
+  z-index: 2;
+}
+
+.secret-surprise__btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  animation: secretShine 3s ease-in-out infinite;
+}
+
+@keyframes secretShine {
+  0%   { left: -100%; }
+  50%  { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* ═══════════════════════════════════════
+   SECRET SURPRISE POPUP
+   ═══════════════════════════════════════ */
+.secret-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 41000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.secret-popup.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.secret-popup__card {
+  position: relative;
+  background: linear-gradient(145deg, #fff0f3 0%, #fce4ec 40%, #f8bbd0 100%);
+  padding: 3rem 2.5rem 2.5rem;
+  border-radius: 24px;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow:
+    0 20px 60px rgba(173, 20, 87, 0.3),
+    0 0 80px rgba(255, 100, 150, 0.1);
+  transform: scale(0.5) translateY(30px);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body.dark-mode .secret-popup__card {
+  background: linear-gradient(145deg, #4a1830 0%, #3e1428 40%, #2d0f1e 100%);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(212, 160, 120, 0.08);
+}
+
+.secret-popup.open .secret-popup__card {
+  transform: scale(1) translateY(0);
+}
+
+.secret-popup__close {
+  position: absolute;
+  top: 0.8rem;
+  right: 1rem;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(173, 20, 87, 0.1);
+  color: #ad1457;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, transform 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  line-height: 1;
+}
+
+body.dark-mode .secret-popup__close {
+  background: rgba(245, 213, 200, 0.1);
+  color: #f5d5c8;
+}
+
+.secret-popup__close:hover {
+  background: rgba(173, 20, 87, 0.2);
+  transform: rotate(90deg);
+}
+
+.secret-popup__close:active {
+  transform: scale(0.9);
+}
+
+.secret-popup__hearts {
+  font-size: 2.5rem;
+  margin-bottom: 0.8rem;
+  animation: secretPopupBounce 1s ease-in-out infinite alternate;
+}
+
+@keyframes secretPopupBounce {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.15) rotate(5deg); }
+}
+
+.secret-popup__msg {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+  font-weight: 600;
+  font-style: italic;
+  color: #ad1457;
+  line-height: 1.4;
+  margin-bottom: 0.6rem;
+}
+
+body.dark-mode .secret-popup__msg {
+  color: #f5d5c8;
+}
+
+.secret-popup__msg--second {
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem) !important;
+  opacity: 0;
+  animation: none;
+}
+
+.secret-popup.open .secret-popup__msg--second {
+  animation: secretMsgFadeIn 0.8s ease 0.6s forwards;
+}
+
+@keyframes secretMsgFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.secret-popup__sub {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgba(173, 20, 87, 0.6);
+  letter-spacing: 0.3px;
+}
+
+body.dark-mode .secret-popup__sub {
+  color: rgba(245, 213, 200, 0.5);
+}
+
+/* ═══════════════════════════════════════
+   SECRET CONFETTI CANVAS
+   ═══════════════════════════════════════ */
+#secretConfettiCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 42000;
 }
 
 /* ═══════════════════════════════════════
@@ -998,4 +1256,13 @@ body.cursor-active .surprise-popup__close {
   .gallery-grid { max-width: 290px; }
   .video-grid { max-width: 290px; }
   .final-words__line { font-size: 1.3rem; }
+
+  .secret-surprise__btn {
+    font-size: 0.95rem;
+    padding: 0.85rem 2rem;
+  }
+
+  .secret-popup__card {
+    padding: 2.5rem 1.5rem 2rem;
+  }
 }

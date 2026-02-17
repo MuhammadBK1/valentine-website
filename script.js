@@ -454,4 +454,157 @@
 
   initSurprise();
 
+  /* ============================================================
+     8.  SECRET SURPRISE — "Click if you love me" CONFETTI + POPUP
+     ============================================================ */
+  function initSecretSurprise() {
+    var btn      = document.getElementById('secretSurpriseBtn');
+    var popup    = document.getElementById('secretPopup');
+    var closeBtn = document.getElementById('secretPopupClose');
+    var canvas   = document.getElementById('secretConfettiCanvas');
+    if (!btn || !popup || !closeBtn || !canvas) return;
+
+    var ctx = canvas.getContext('2d');
+    var pieces = [];
+    var rafId = null;
+
+    function resizeCanvas() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    var PIECE_COUNT = isMobile ? 80 : 150;
+    var CONFETTI_COLORS = [
+      '#ff6b81', '#ff4757', '#ff6348', '#ffa502',
+      '#ff7f50', '#e84393', '#fd79a8', '#fab1a0',
+      '#ff9ff3', '#f368e0', '#ee5a24', '#ffcccc'
+    ];
+    var HEART_CHARS = ['❤️', '💖', '💕', '💗', '🩷', '💘', '😌'];
+
+    function createFallingPiece(type) {
+      var startX = Math.random() * canvas.width;
+      return {
+        x: startX,
+        y: -(Math.random() * 200 + 20),
+        vx: (Math.random() - 0.5) * 3,
+        vy: Math.random() * 3 + 2,
+        gravity: 0.03 + Math.random() * 0.02,
+        size: Math.random() * 7 + 3,
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 6,
+        color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+        alpha: 1,
+        decay: 0.003 + Math.random() * 0.003,
+        type: type,
+        heart: HEART_CHARS[Math.floor(Math.random() * HEART_CHARS.length)],
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: 0.03 + Math.random() * 0.04
+      };
+    }
+
+    function drawPiece(p) {
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
+
+      if (p.type === 'heart') {
+        ctx.font = (p.size * 2.5) + 'px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.heart, 0, 0);
+      } else {
+        ctx.fillStyle = p.color;
+        var shapes = ['rect', 'circle', 'strip'];
+        var shape = shapes[Math.floor(p.size) % 3];
+        if (shape === 'rect') {
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+        } else if (shape === 'circle') {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-p.size / 2, -1, p.size, 2.5);
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function animateSecretConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (var i = pieces.length - 1; i >= 0; i--) {
+        var p = pieces[i];
+        p.wobble += p.wobbleSpeed;
+        p.x += p.vx + Math.sin(p.wobble) * 0.8;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.rotation += p.rotSpeed;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0 || p.y > canvas.height + 50) {
+          pieces.splice(i, 1);
+          continue;
+        }
+
+        drawPiece(p);
+      }
+
+      if (pieces.length > 0) {
+        rafId = requestAnimationFrame(animateSecretConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        rafId = null;
+      }
+    }
+
+    function triggerSecretConfetti() {
+      var confettiCount = Math.floor(PIECE_COUNT * 0.7);
+      for (var i = 0; i < confettiCount; i++) {
+        pieces.push(createFallingPiece('confetti'));
+      }
+
+      var heartCount = PIECE_COUNT - confettiCount;
+      for (var j = 0; j < heartCount; j++) {
+        pieces.push(createFallingPiece('heart'));
+      }
+
+      if (!rafId) {
+        rafId = requestAnimationFrame(animateSecretConfetti);
+      }
+    }
+
+    /* Open popup + confetti on click */
+    btn.addEventListener('click', function () {
+      triggerSecretConfetti();
+      setTimeout(function () {
+        popup.classList.add('open');
+        popup.setAttribute('aria-hidden', 'false');
+      }, 400);
+    });
+
+    /* Close popup */
+    function closeSecretPopup() {
+      popup.classList.remove('open');
+      popup.setAttribute('aria-hidden', 'true');
+    }
+
+    closeBtn.addEventListener('click', closeSecretPopup);
+
+    popup.addEventListener('click', function (e) {
+      if (e.target === popup) closeSecretPopup();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && popup.classList.contains('open')) {
+        closeSecretPopup();
+      }
+    });
+  }
+
+  initSecretSurprise();
+
 })();
