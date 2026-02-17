@@ -143,9 +143,69 @@ body.dark-mode::before {
   display: none;
 }
 
+.intro__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  opacity: 0;
+  animation: introFadeUp 2.2s ease 0.3s forwards;
+}
+
+/* ── Cute Photo Frame ── */
+.intro__frame {
+  position: relative;
+  padding: 10px;
+  background: linear-gradient(145deg, rgba(255,220,210,0.15), rgba(255,180,200,0.08));
+  border: 2px solid rgba(255,200,200,0.25);
+  border-radius: 20px;
+  box-shadow:
+    0 0 30px rgba(255,100,150,0.15),
+    0 0 60px rgba(255,100,150,0.08),
+    inset 0 0 20px rgba(255,200,200,0.05);
+  animation: frameGlow 3s ease-in-out infinite alternate;
+}
+
+.intro__photo-img {
+  display: block;
+  width: 200px;
+  height: 250px;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 14px;
+  filter: brightness(0.9) saturate(0.85);
+}
+
+/* Corner heart decorations */
+.intro__frame-deco {
+  position: absolute;
+  font-size: 0.85rem;
+  line-height: 1;
+  animation: decoFloat 2.5s ease-in-out infinite alternate;
+}
+
+.intro__frame-deco--tl { top: -10px; left: -10px; animation-delay: 0s; }
+.intro__frame-deco--tr { top: -10px; right: -10px; animation-delay: 0.4s; }
+.intro__frame-deco--bl { bottom: -10px; left: -10px; animation-delay: 0.8s; }
+.intro__frame-deco--br { bottom: -10px; right: -10px; animation-delay: 1.2s; }
+
+@keyframes decoFloat {
+  0%   { transform: scale(1) rotate(0deg); }
+  100% { transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes frameGlow {
+  0%   { box-shadow: 0 0 30px rgba(255,100,150,0.15), 0 0 60px rgba(255,100,150,0.08), inset 0 0 20px rgba(255,200,200,0.05); }
+  100% { box-shadow: 0 0 40px rgba(255,100,150,0.25), 0 0 80px rgba(255,100,150,0.12), inset 0 0 30px rgba(255,200,200,0.08); }
+}
+
+@keyframes introFadeUp {
+  0%   { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .intro__content {
   text-align: center;
-  animation: introZoom 3s ease forwards;
 }
 
 .intro__text {
@@ -901,6 +961,20 @@ body.cursor-active .surprise-popup__close {
     width: 40px;
     height: 40px;
   }
+
+  .intro__photo-img {
+    width: 160px;
+    height: 210px;
+  }
+
+  .intro__frame {
+    padding: 8px;
+    border-radius: 16px;
+  }
+
+  .intro__frame-deco { font-size: 0.7rem; }
+
+  .intro__inner { gap: 1.2rem; }
 
   .intro__text {
     padding: 0 1rem;
